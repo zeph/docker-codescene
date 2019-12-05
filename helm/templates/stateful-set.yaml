@@ -13,6 +13,7 @@ spec:
       app: {{ template "codescene.fullname" . }}
       release: "{{ .Release.Name }}"
   replicas: 1
+  serviceName: {{ template "codescene.fullname" . }}
   template:
     metadata:
       labels:
