@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "codescene.fullname" . }}
+  labels:
+    app: {{ template "codescene.fullname" . }}
+    chart: {{ template "codescene.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "codescene.fullname" . }}
+      release: "{{ .Release.Name }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "codescene.fullname" . }}
+        chart: {{ template "codescene.chart" . }}
+        release: "{{ .Release.Name }}"
+{{- if or .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
+      containers:
+      - name: codescene
+        image: {{ template "codescene.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        envFrom:
+        {{- if $.Values.configMap }}
+          - configMapRef:
+              name: {{ template "codescene.fullname" $ }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 3003
+        livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 10 }}
+        readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: codescene-data
+          mountPath: {{ .Values.volumeMounts.codescene.mountPath }}
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name:  codescene-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      dataSource: null
+      resources:
+        requests:
+          storage: {{ .Values.persistence.codescene.size | quote }}
+{{- if .Values.persistence.codescene.storageClass }}
+{{- if (eq "-" .Values.persistence.codescene.storageClass) }}
+      storageClassName: ""
+{{- else }}
+      storageClassName: "{{ .Values.persistence.codescene.storageClass }}"
+{{- end }}
+{{- end }}

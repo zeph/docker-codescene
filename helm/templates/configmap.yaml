@@ -1,0 +1,16 @@
+{{- if .Values.configMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "codescene.fullname" . }}
+  labels:
+    app: {{ template "codescene.name" . }}
+    chart: {{ template "codescene.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    tribe: {{ .Values.tribe }}
+    squad: {{ .Values.squad }}
+
+data:
+{{ toYaml .Values.configMap | indent 2 }}
+{{- end }}
