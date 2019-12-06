@@ -3,7 +3,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  name: "codescene-ingress"
   labels:
     app: {{ template "codescene.fullname" $ }}
     chart: {{ template "codescene.chart" $ }}
@@ -24,7 +24,7 @@ spec:
           - path: {{ default "/" .path }}
             backend:
               serviceName: {{ template "codescene.fullname" $ }}
-              servicePort: 3003
+              servicePort: codescene-http
 {{- if .tls }}
   tls:
   - hosts:
