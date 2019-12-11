@@ -3,7 +3,8 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "codescene-ingress"
+  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+
   labels:
     app: {{ template "codescene.fullname" $ }}
     chart: {{ template "codescene.chart" $ }}
