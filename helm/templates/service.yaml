@@ -28,5 +28,5 @@ spec:
       {{- end }}
     {{- end }}
   selector:
-    app.kubernetes.io/name: {{ template "codescene.fullname" . }}
+    app: {{ template "codescene.fullname" . }}
   
