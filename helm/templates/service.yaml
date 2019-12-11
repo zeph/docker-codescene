@@ -19,7 +19,7 @@ spec:
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
       nodePort: {{ .Values.service.nodePorts.http }}
       {{- end }}
-    {{- if not (empty .Values.service.nodePorts.https)}}
+    {{- if not (empty .Values.service.httpsPort)}}
     - name: https
       port: {{ .Values.service.httpsPort }}
       targetPort: {{ .Values.service.targetPort }}
