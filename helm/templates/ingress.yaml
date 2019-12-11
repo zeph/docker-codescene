@@ -24,7 +24,7 @@ spec:
           - path: {{ default "/" .path }}
             backend:
               serviceName: {{ template "codescene.fullname" $ }}
-              servicePort: codescene-http
+              servicePort: https
 {{- if .tls }}
   tls:
   - hosts:
