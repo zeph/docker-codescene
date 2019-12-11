@@ -12,7 +12,9 @@ configMap:
 
 service:
   type: LoadBalancer
-  port: 3003
+  httpPort: 80
+  httpsPort: 443
+  targetPort: 3003
   nodePorts:
     http: ""
     https: ""

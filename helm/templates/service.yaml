@@ -13,20 +13,20 @@ spec:
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
   {{- end }}
   ports:
-    - name: codescene-http
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+    - name: http
+      port: {{ .Values.service.httpPort }}
+      targetPort: {{ .Values.service.targetPort }}
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
       nodePort: {{ .Values.service.nodePorts.http }}
       {{- end }}
     {{- if not (empty .Values.service.nodePorts.https)}}
-    - name: codescene-https
+    - name: https
       port: {{ .Values.service.httpsPort }}
-      targetPort: https
+      targetPort: {{ .Values.service.targetPort }}
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.https)))}}
       nodePort: {{ .Values.service.nodePorts.https }}
       {{- end }}
     {{- end }}
   selector:
-    app: {{ template "codescene.fullname" . }}
+    app.kubernetes.io/name: {{ template "codescene.fullname" . }}
   
